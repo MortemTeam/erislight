@@ -7,7 +7,7 @@ Nerves:
 
 1. Brew coffee
 
-2. Play https://youtu.be/tlqIzNma5KA
+2. Play https://youtu.be/tlqIzNma5KA & https://youtu.be/oMVo2FpbnlM
 
 The [Rust] compiler:
 
