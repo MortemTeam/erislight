@@ -3,7 +3,11 @@ Most powerful optimization using auxtools
 
 ## Dependencies
 
-*These instructions were taken directly from tgstation's [rust-g](https://github.com/tgstation/rust-g) documentation.*
+Nerves:
+
+1. Brew coffee
+
+2. Play https://youtu.be/tlqIzNma5KA
 
 The [Rust] compiler:
 
