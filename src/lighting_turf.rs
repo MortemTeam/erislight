@@ -1,5 +1,17 @@
 use crate::*;
 
+pub mod pubs {
+    use crate::Value;
+
+    pub fn lighting_build_overlay(src: &Value, usr: &Value) {
+        super::lighting_build_overlay(src, usr, vec![]);
+    }
+
+    pub fn lighting_clear_overlay(src: &Value, usr: &Value) {
+        super::lighting_clear_overlay(src, usr, vec![]);
+    }
+}
+
 #[hook("/turf/proc/reconsider_lights")]
 fn reconsider_lights() {
     let affecting_lights = src.get(byond_string!("affecting_lights"))?;

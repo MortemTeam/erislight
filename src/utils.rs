@@ -30,6 +30,13 @@ pub fn ispath(v: &Value, path: &str) -> Option<bool> {
     }
 }
 
+pub fn local_ispath(v: &Value, path: &str) -> bool {
+    match v.get_type() {
+        Err(_) => false,
+        Ok(t) => t.starts_with(path),
+    }
+}
+
 pub fn value_loc(v: &Value) -> (u32, u32, u32) {
     (
         v.get_number(byond_string!("x")).unwrap() as u32,
