@@ -1,6 +1,16 @@
 # ErisLight
 Most powerful optimization using auxtools
 
+## TODO SSlighting
+
+- [ ] lighting_area.dm
+- [ ] lighting_atom.dm
+- [ ] lighting_corner.dm
+- [ ] lighting_overlay.dm
+- [ ] lighting_setup.dm
+- [ ] lighting_source.dm
+- [✓] lighting_turf.dm
+
 ## Dependencies
 
 Nerves:
