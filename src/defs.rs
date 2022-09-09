@@ -20,8 +20,8 @@ pub fn RANGE_TURF(RADIUS: u32, CENTER: &Value) -> Value {
     let maxx = world.get_number(byond_string!("maxx")).unwrap() as u32;
     let maxy = world.get_number(byond_string!("maxy")).unwrap() as u32;
 
-    Proc::find("/proc/block").unwrap().call(&[
+    block(
         &Value::turf(max(x - RADIUS, 1),    max(y - RADIUS, 1),    z).unwrap(),
         &Value::turf(min(x - RADIUS, maxx), min(y - RADIUS, maxy), z).unwrap(),
-    ]).unwrap()
+    ).unwrap()
 }

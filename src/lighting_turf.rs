@@ -10,6 +10,10 @@ pub mod pubs {
     pub fn lighting_clear_overlay(src: &Value, usr: &Value) {
         super::lighting_clear_overlay(src, usr, vec![]);
     }
+
+    pub fn generate_missing_corners(src: &Value, usr: &Value) {
+        super::generate_missing_corners(src, usr, vec![]);
+    }
 }
 
 #[hook("/turf/proc/reconsider_lights")]
@@ -52,7 +56,7 @@ fn lighting_build_overlay() {
         generate_missing_corners(src, usr, vec![]);
     }
 
-    make_new("/atom/movable/lighting_overlay", vec![src.clone()]);
+    make_new("/atom/movable/lighting_overlay", vec![src]);
 
     for C in ListIterator::from(src.get_list(byond_string!("corners"))?) {
         if ! C.get(byond_string!("active"))?.is_truthy() {
@@ -145,7 +149,7 @@ fn generate_missing_corners() {
     for i in 1..=4 { // for (var/i = 1 to 4) 
         if !corners.get(i)?.is_truthy() {
             corners.set(i, 
-                make_new("/datum/lighting_corner", vec![src.clone(), LIGHTING_CORNER_DIAGONAL.get(i)?])
+                make_new("/datum/lighting_corner", vec![src, &LIGHTING_CORNER_DIAGONAL.get(i)?])
                 .unwrap()
             );
         }

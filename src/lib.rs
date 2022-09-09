@@ -18,3 +18,7 @@ pub mod lighting_turf;
 #[allow(unused_must_use)]
 #[allow(non_snake_case)]
 pub mod lighting_area;
+
+#[allow(unused_must_use)]
+#[allow(non_snake_case)]
+pub mod lighting_setup;
