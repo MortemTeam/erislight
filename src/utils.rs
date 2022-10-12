@@ -66,6 +66,16 @@ pub fn local_block(start: &Value, end: &Value) -> Vec<Value> {
     v
 }
 
+pub fn view(dist: &Value, center: &Value) -> Option<Value> {
+    if let Some(func) = Proc::find("/proc/make_view") {
+        Some(func.call(&[
+            dist, center,
+        ]).unwrap())
+    } else {
+        None
+    }
+}
+
 pub fn block(start: &Value, end: &Value) -> Option<Value> {
     if let Some(func) = Proc::find("/proc/make_block") {
         Some(func.call(&[
