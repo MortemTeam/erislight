@@ -1,18 +1,22 @@
 use crate::*;
 
 pub mod pubs {
-    use crate::Value;
+    use crate::{Value, DMResult};
 
-    pub fn lighting_build_overlay(src: &Value, usr: &Value) {
-        super::lighting_build_overlay(src, usr, vec![]);
+    pub fn lighting_build_overlay(src: &Value, usr: &Value) -> DMResult {
+        return super::lighting_build_overlay(src, usr, vec![]);
     }
 
-    pub fn lighting_clear_overlay(src: &Value, usr: &Value) {
-        super::lighting_clear_overlay(src, usr, vec![]);
+    pub fn lighting_clear_overlay(src: &Value, usr: &Value) -> DMResult {
+        return super::lighting_clear_overlay(src, usr, vec![]);
     }
 
-    pub fn generate_missing_corners(src: &Value, usr: &Value) {
-        super::generate_missing_corners(src, usr, vec![]);
+    pub fn generate_missing_corners(src: &Value, usr: &Value) -> DMResult {
+        return super::generate_missing_corners(src, usr, vec![]);
+    }
+
+    pub fn get_corners(src: &Value, usr: &Value) -> DMResult {
+        return super::get_corners(src, usr, vec![]);
     }
 }
 
@@ -21,7 +25,7 @@ fn reconsider_lights() {
     let affecting_lights = src.get(byond_string!("affecting_lights"))?;
     if affecting_lights.is_truthy() {
         for L in ListIterator::from(affecting_lights.as_list()?) {
-            L.call("vis_update", &[]);
+            lighting_source::pubs::vis_update(&L, usr);
         }
     }
 
@@ -35,9 +39,14 @@ fn lighting_clear_overlay() {
         qdel(&lighting_overlay);
     }
 
-    for C in ListIterator::from(src.get_list(byond_string!("corners"))?) {
-        C.call("update_active", &[]);
-    }
+    src.get(byond_string!("corners"))?.as_list().and_then(|corners| {
+        for C in ListIterator::from(corners) {
+            C.call("update_active", &[]);
+        }
+
+        Ok(())
+    });
+
 
     Ok(Value::null())
 }
@@ -61,7 +70,7 @@ fn lighting_build_overlay() {
     for C in ListIterator::from(src.get_list(byond_string!("corners"))?) {
         if ! C.get(byond_string!("active"))?.is_truthy() {
             for S in ListIterator::from(C.get_list(byond_string!("affecting"))?) {
-                S.call("recalc_corner", &[&C]);
+                lighting_source::pubs::recalc_corner(&S, usr, &C);
             }
 
             C.set(byond_string!("active"), Value::from(true));
@@ -72,7 +81,7 @@ fn lighting_build_overlay() {
 }
 
 #[hook("/turf/proc/get_lumcount")]
-fn get_lumcount(minlum: Value, maxlum: Value) {
+fn get_lumcount(minlum: &Value, maxlum: &Value) {
     let minlum = minlum.as_number().unwrap_or_else(|_| 0.0);
     let maxlum = maxlum.as_number().unwrap_or_else(|_| 1.0);
 
@@ -115,7 +124,7 @@ fn recalc_atom_opacity() {
 // Not realized because ..() not implemented in auxtools
 
 #[hook("/turf/change_area")]
-fn change_area(old_area: Value, new_area: Value) {
+fn change_area(old_area: &Value, new_area: &Value) {
     let new_area_dynamic_lighting = new_area.get(byond_string!("dynamic_lighting"))?;
     if new_area_dynamic_lighting != old_area.get(byond_string!("dynamic_lighting"))? {
         match new_area_dynamic_lighting.is_truthy() {
@@ -128,7 +137,7 @@ fn change_area(old_area: Value, new_area: Value) {
 }
 
 #[hook("/turf/proc/get_corners")]
-fn get_corners(dir: Value) {
+fn get_corners(dir: &Value) {
     Ok(if src.get(byond_string!("has_opaque_atom"))?.is_truthy() {
         Value::null()
     } else {

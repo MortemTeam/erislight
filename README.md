@@ -3,11 +3,11 @@ Most powerful optimization using auxtools
 
 ## TODO SSlighting
 
-- [ ] lighting_area.dm
+- [✓] lighting_area.dm
 - [ ] lighting_atom.dm
 - [ ] lighting_corner.dm
 - [ ] lighting_overlay.dm
-- [ ] lighting_setup.dm
+- [✓] lighting_setup.dm
 - [ ] lighting_source.dm
 - [✓] lighting_turf.dm
 
@@ -17,7 +17,7 @@ Nerves:
 
 1. Brew coffee
 
-2. Play https://youtu.be/tlqIzNma5KA & https://youtu.be/oMVo2FpbnlM
+2. Play https://youtu.be/tlqIzNma5KA
 
 The [Rust] compiler:
 
