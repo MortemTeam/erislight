@@ -47,7 +47,6 @@ fn effect_update(src: &Value) {
     }
 }
 
-/*
 #[hook("/datum/light_source/proc/update")]
 fn update(new_top_atom: &Value) {
     let mut top_atom = &src.get(byond_string!("top_atom"))?;
@@ -76,7 +75,6 @@ fn update(new_top_atom: &Value) {
     effect_update(src);
     Ok(Value::null())
 }
-*/
 
 #[hook("/datum/light_source/proc/force_update")]
 fn force_update() {
