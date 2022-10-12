@@ -92,7 +92,6 @@ fn vis_update() {
     Ok(Value::null())
 }
 
-/*
 #[hook("/datum/light_source/proc/check")]
 fn check() {
     let source_atom = src.get(byond_string!("source_atom"))?;
@@ -157,9 +156,7 @@ fn check() {
 
     Ok(Value::from(ret))
 }
-*/
 
-/*
 #[hook("/datum/light_source/proc/parse_light_color")]
 fn parse_light_color() {
     match src.get_string(byond_string!("light_color")) {
@@ -177,7 +174,6 @@ fn parse_light_color() {
 
     Ok(Value::null())
 }
-*/
 
 /*
 static mut update_gen: f32 = 1.;
