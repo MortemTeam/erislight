@@ -1,5 +1,21 @@
 use crate::*;
 
+pub fn stack_trace(msg: &str) -> Option<Value> {
+    if let Some(func) = Proc::find("/proc/auxtools_stack_trace") {
+        Some(func.call(&[&Value::from_string(msg).unwrap()]).unwrap())
+    } else {
+        None
+    }
+}
+
+pub fn inspect_value(v: &Value) -> Option<Value> {
+    if let Some(func) = Proc::find("/proc/inspect_value") {
+        Some(func.call(&[v]).unwrap())
+    } else {
+        None
+    }
+}
+
 pub fn world_turfs() -> Vec<Value> {
     let world = Value::world();
     let maxx = world.get_number(byond_string!("maxx")).unwrap() as u32;
@@ -68,9 +84,7 @@ pub fn local_block(start: &Value, end: &Value) -> Vec<Value> {
 
 pub fn view(dist: &Value, center: &Value) -> Option<Value> {
     if let Some(func) = Proc::find("/proc/make_view") {
-        Some(func.call(&[
-            dist, center,
-        ]).unwrap())
+        Some(func.call(&[dist, center]).unwrap())
     } else {
         None
     }
@@ -78,9 +92,7 @@ pub fn view(dist: &Value, center: &Value) -> Option<Value> {
 
 pub fn block(start: &Value, end: &Value) -> Option<Value> {
     if let Some(func) = Proc::find("/proc/make_block") {
-        Some(func.call(&[
-            start, end,
-        ]).unwrap())
+        Some(func.call(&[start, end]).unwrap())
     } else {
         None
     }

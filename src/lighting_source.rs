@@ -175,16 +175,19 @@ fn parse_light_color() {
     Ok(Value::null())
 }
 
-/*
-static mut update_gen: f32 = 1.;
 #[hook("/datum/light_source/proc/apply_lum")]
 fn apply_lum() {
+    static mut update_gen: i32 = 1;
+
     unsafe { 
         src.set(byond_string!("applied"), Value::from(true));
 
         src.set(byond_string!("applied_lum_r"), &src.get(byond_string!("lum_r"))?);
         src.set(byond_string!("applied_lum_g"), &src.get(byond_string!("lum_g"))?);
         src.set(byond_string!("applied_lum_b"), &src.get(byond_string!("lum_b"))?);
+
+        let effect_str = src.get_list(byond_string!("effect_str"))?;
+        let affecting_turfs = src.get_list(byond_string!("affecting_turfs"))?;
 
         for T in FOR_DVIEW("/turf",
             &src.get(byond_string!("light_range"))?,
@@ -195,42 +198,41 @@ fn apply_lum() {
                 lighting_turf::pubs::generate_missing_corners(&T, usr);
             }
 
-            let effect_str = src.get_list(byond_string!("effect_str"))?;
-            let affecting_turfs = src.get_list(byond_string!("affecting_turfs"))?;
-            lighting_turf::pubs::get_corners(&T, usr).unwrap().as_list().and_then(|corners| {
-                for C in ListIterator::from(corners) {
-                    if C.get_number(byond_string!("update_gen"))? == update_gen {
-                        continue;
-                    }
-
-                    C.set(byond_string!("update_gen"), Value::from(update_gen));
-                    C.get_list(byond_string!("affecting"))?.append(src);
-
-                    if ! C.get(byond_string!("active"))?.is_truthy() {
-                        effect_str.set(C, Value::from(0.0));
-                        continue;
-                    }
-
-                    APPLY_CORNER(src, &C);
+            let corners = lighting_turf::pubs::get_corners(&T, usr).unwrap().as_list()?;
+            for C in ListIterator::from(corners) {
+                if C.get_number(byond_string!("update_gen"))? as i32 == update_gen {
+                    continue;
                 }
 
-                Ok(())
-            });
+                C.set(byond_string!("update_gen"), Value::from(update_gen));
+                C.get_list(byond_string!("affecting"))?.append(src);
 
-            if ! T.get(byond_string!("affecting_lights"))?.is_truthy() {
-                T.set(byond_string!("affecting_lights"), List::new());
+                if ! C.get(byond_string!("active"))?.is_truthy() {
+                    effect_str.set(C, Value::from(0.0));
+                    continue;
+                }
+
+                APPLY_CORNER(src, &C);
             }
 
-            T.get_list(byond_string!("affecting_lights"))?.append(src);
+            let t_affecting_lights = match T.get(byond_string!("affecting_lights"))?.as_list() {
+                Ok(list) => list,
+                Err(_) => {
+                    let list = List::new();
+                    T.set(byond_string!("affecting_lights"), &list);
+                    list
+                },
+            };
+
+            t_affecting_lights.append(src);
             affecting_turfs.append(T);
         } END_FOR_DVIEW();
 
-        update_gen += 1.;
+        update_gen += 1;
     }
 
     Ok(Value::null())
 }
-*/
 
 /*
 #[hook("/datum/light_source/proc/remove_lum")]

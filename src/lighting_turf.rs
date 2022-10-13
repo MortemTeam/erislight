@@ -139,7 +139,7 @@ fn change_area(old_area: &Value, new_area: &Value) {
 #[hook("/turf/proc/get_corners")]
 fn get_corners(dir: &Value) {
     Ok(if src.get(byond_string!("has_opaque_atom"))?.is_truthy() {
-        Value::null()
+        Value::from(List::new())
     } else {
         src.get(byond_string!("corners"))?
     })

@@ -68,13 +68,19 @@ pub fn LUM_FALLOFF(src: &Value, C: &Value, T: &Value) -> f32 {
     let Cy = C.get_number(byond_string!("y")).unwrap();
     let Ty = T.get_number(byond_string!("y")).unwrap();
 
-    1.0 - (
-        (Cx - Tx).powi(2) + (Cy - Ty).powi(2) + LIGHTING_HEIGHT / light_range.max(1.0)
-    ).sqrt()
+    1.0 - CLAMP01(
+        ((Cx - Tx).powi(2) + (Cy - Ty).powi(2) + LIGHTING_HEIGHT).sqrt()
+            /
+        1.0_f32.max(light_range)
+    )
+}
+
+pub fn CLAMP01(x: f32) -> f32 {
+    x.clamp(0.0, 1.0)
 }
 
 pub fn FOR_DVIEW(filter_type: &str, range: &Value, center: &Value, invis_flags: &Value) -> TypedListIterator {
-    let dview_mob = Value::world().get(byond_string!("dview_mob")).unwrap();
+    let dview_mob = Value::globals().get(byond_string!("dview_mob")).unwrap();
     dview_mob.set(byond_string!("loc"), center);
     dview_mob.set(byond_string!("see_invisible"), invis_flags);
     TypedListIterator::from(filter_type, view(range, &dview_mob).unwrap().as_list().unwrap())
