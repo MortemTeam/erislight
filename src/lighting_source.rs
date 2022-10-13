@@ -28,7 +28,7 @@ fn destroy() {
 
     let top_atom = src.get(byond_string!("top_atom"))?;
     if top_atom.is_truthy() {
-        let ta_light_sources = source_atom.get(byond_string!("light_sources"))?;
+        let ta_light_sources = top_atom.get(byond_string!("light_sources"))?;
         if ta_light_sources.is_truthy() {
             ta_light_sources.as_list()?.remove(src);
             src.set(byond_string!("top_atom"), Value::null());
@@ -56,19 +56,16 @@ fn update(new_top_atom: &Value) {
             top_atom.get_list(byond_string!("light_sources"))?.remove(src);
         }
 
+        src.set(byond_string!("top_atom"), new_top_atom);
         top_atom = new_top_atom;
 
         if top_atom != source_atom {
-            let ta_light_sources = match top_atom.get(byond_string!("light_sources"))?.as_list() {
-                Ok(list) => list,
-                Err(_) => {
-                    let list = List::new();
-                    top_atom.set(byond_string!("light_sources"), &list);
-                    list
-                },
-            };
+            let ta_light_sources = top_atom.get(byond_string!("light_sources"))?;
+            if ! ta_light_sources.is_truthy() {
+                top_atom.set(byond_string!("light_sources"), List::new());
+            }
 
-            ta_light_sources.append(src);
+            top_atom.get(byond_string!("light_sources"))?.as_list()?.append(src);
         }
     }
 
@@ -215,16 +212,12 @@ fn apply_lum() {
                 APPLY_CORNER(src, &C);
             }
 
-            let t_affecting_lights = match T.get(byond_string!("affecting_lights"))?.as_list() {
-                Ok(list) => list,
-                Err(_) => {
-                    let list = List::new();
-                    T.set(byond_string!("affecting_lights"), &list);
-                    list
-                },
-            };
+            let t_affecting_lights = T.get(byond_string!("affecting_lights"))?;
+            if ! t_affecting_lights.is_truthy() {
+                T.set(byond_string!("affecting_lights"), List::new());
+            }
 
-            t_affecting_lights.append(src);
+            T.get(byond_string!("affecting_lights"))?.as_list()?.append(src);
             affecting_turfs.append(T);
         } END_FOR_DVIEW();
 
@@ -239,24 +232,23 @@ fn apply_lum() {
 fn remove_lum() {
     src.set(byond_string!("applied"), Value::from(false));
 
-    let affecting_turfs = src.get(byond_string!("affecting_turfs"))?;
-
-    for T in ListIterator::from(affecting_turfs.clone().as_list()?) {
+    let affecting_turfs = src.get(byond_string!("affecting_turfs"))?.as_list()?;
+    for T in ListIterator::from(affecting_turfs) {
         let T_affecting_lights = T.get(byond_string!("affecting_lights"))?;
         if T_affecting_lights.is_truthy() {
             T_affecting_lights.as_list()?.remove(src);
         }
     }
 
-    Value::from(affecting_turfs).call("Cut", &[]);
+    src.set(byond_string!("affecting_turfs"), List::new());
 
-    let effect_str = src.get(byond_string!("effect_str"))?;
-    for C in ListIterator::from(effect_str.clone().as_list()?) {
+    let effect_str = src.get(byond_string!("effect_str"))?.as_list()?;
+    for C in ListIterator::from(effect_str) {
         REMOVE_CORNER(src, &C);
         C.get_list(byond_string!("affecting"))?.remove(src);
     }
 
-    Value::from(effect_str).call("Cut", &[]);
+    src.set(byond_string!("effect_str"), List::new());
 
     Ok(Value::null())
 }
